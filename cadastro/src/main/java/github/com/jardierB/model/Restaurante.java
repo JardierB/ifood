@@ -15,7 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity 
-@Table (name = "restaurante")
+@Table (name = "restaurantes")
 public class Restaurante extends PanacheEntityBase {
     //No panache a propiedades ao serem compilada viram prive
     @Id 

@@ -11,7 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "prato")
+@Table(name = "pratos")
 public class Prato extends PanacheEntityBase {
 
     @Id

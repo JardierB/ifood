@@ -17,7 +17,7 @@ public class CadastroTestLifecycleManager implements QuarkusTestResourceLifecycl
         Map<String, String> propriedades = new HashMap<String, String>();
         propriedades.put("quarkus.datasource.jdbc.url", POSTGRES.getJdbcUrl());
         propriedades.put("quarkus.datasource.username", POSTGRES.getUsername());
-        propriedades.put("quarkus.datasource.passworg", POSTGRES.getPassword());
+        propriedades.put("quarkus.datasource.password", POSTGRES.getPassword());
 
         return propriedades;
 

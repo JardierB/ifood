@@ -2,10 +2,9 @@ package github.com.jardierB;
 
 import static io.restassured.RestAssured.given;
 
-import java.io.ObjectInputFilter.Status;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.database.rider.cdi.api.DBRider;
 import com.github.database.rider.core.api.configuration.DBUnit;
@@ -18,7 +17,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 
-
 import org.approvaltests.Approvals;
 import org.jboss.resteasy.reactive.RestResponse.StatusCode;
 
@@ -30,7 +28,7 @@ import github.com.jardierB.model.Restaurante;
 @DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
 public class RestauranteResourceTest {
 
-    @Test
+    @Test 
     @DataSet("restaurantes-cenario-1.yml")
     public void buscarRestaurantes() {
         String resultado = given()
@@ -40,6 +38,10 @@ public class RestauranteResourceTest {
                 .extract().asString();
 
         Approvals.verifyJson(resultado);
+    }
+
+    private RequestSpecification given() {
+        return RestAssured.given().contentType(ContentType.JSON);
     }
 
     @Test 

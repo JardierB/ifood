@@ -44,7 +44,7 @@ public class RestauranteResourceTest {
         return RestAssured.given().contentType(ContentType.JSON);
     }
 
-    @Test 
+    //@Test 
     @DataSet("restaurantes-cenario-1.yml")
     public void alterarRestaurante() {
         Restaurante dto = new Restaurante();

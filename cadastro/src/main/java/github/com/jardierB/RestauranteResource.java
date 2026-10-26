@@ -6,8 +6,10 @@ import java.util.Optional;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import github.com.jardierB.model.Restaurante;
-
+import github.com.jardierB.dto.AdicionarRestauranteDTO;
+import github.com.jardierB.dto.RestauranteMapper;
 import github.com.jardierB.model.Prato;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -28,6 +30,9 @@ import jakarta.ws.rs.core.Response.Status;
 @Tag(name = "restaurantes")
 public class RestauranteResource {
 
+    @Inject 
+    RestauranteMapper restauranteMapper;
+
     @GET
     public List<Restaurante> buscar() {
         return Restaurante.listAll();
@@ -35,8 +40,9 @@ public class RestauranteResource {
 
     @POST
     @Transactional
-    public Response adicionar(Restaurante dto) {
-        dto.persist();
+    public Response adicionar(AdicionarRestauranteDTO dto) {
+        Restaurante restaurante = restauranteMapper.toRestaurante(dto);
+        restaurante.persist();
         return Response.status(Status.CREATED).build();
     }
 

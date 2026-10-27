@@ -66,17 +66,27 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-junit</artifactId>
-            <scope>test</scope>
+            <artifactId>quarkus-opentelemetry</artifactId>
+        </dependency>
+         <dependency>
+            <groupId>io.opentracing.contrib</groupId>
+            <artifactId>opentracing-tracerresolver</artifactId>
+            <version>0.1.8</version>
+            <scope>compile</scope>
         </dependency>
 
          <!--Teste-->
         <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+            <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
         </dependency>
-            <dependency>
+        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
             <version>1.21.3</version>
@@ -88,25 +98,25 @@
             <version>1.13.0</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
+       <dependency>
             <groupId>com.github.database-rider</groupId>
             <artifactId>rider-cdi</artifactId>
             <version>1.13.0</version>
             <scope>test</scope>
         </dependency>
-       <dependency>
+        <dependency>
             <groupId>stax</groupId>
             <artifactId>stax</artifactId>
             <version>1.2.0</version>
             <scope>test</scope>
         </dependency>
+       
         <dependency>
             <groupId>com.approvaltests</groupId>
             <artifactId>approvaltests</artifactId>
             <version>4.0.2</version>
             <scope>test</scope>
         </dependency>
-       
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>

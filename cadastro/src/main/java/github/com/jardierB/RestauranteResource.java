@@ -3,12 +3,18 @@ package github.com.jardierB;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
+import org.eclipse.microprofile.openapi.annotations.security.OAuthFlow;
+import org.eclipse.microprofile.openapi.annotations.security.OAuthFlows;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import github.com.jardierB.model.Restaurante;
 import github.com.jardierB.dto.AdicionarRestauranteDTO;
 import github.com.jardierB.dto.RestauranteMapper;
 import github.com.jardierB.model.Prato;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -28,9 +34,13 @@ import jakarta.ws.rs.core.Response.Status;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "restaurantes")
+@RolesAllowed("proprietario")
+@SecurityScheme(securitySchemeName = "ifood-oauth", type = SecuritySchemeType.OAUTH2, 
+flows = @OAuthFlows(password = @OAuthFlow(tokenUrl = "http://localhost:8180/realms/ifood/protocol/openid-connect/token")))
+@SecurityRequirement(name = "ifood-oauth")
 public class RestauranteResource {
 
-    @Inject 
+    @Inject
     RestauranteMapper restauranteMapper;
 
     @GET

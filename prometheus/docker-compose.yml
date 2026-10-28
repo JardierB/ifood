@@ -1,0 +1,6 @@
+services:    
+     prometheus_ifood:
+          container_name: prometheus_ifood
+          image: prometheus-ifood
+          ports: 
+                - "9090:9090"          

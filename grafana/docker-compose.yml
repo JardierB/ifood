@@ -1,0 +1,7 @@
+version: '3.7'
+services:    
+     grafana_ifood:
+          container_name: grafana_ifood
+          image: grafana/grafana:6.5.0
+          ports:
+               - "3000:3000"

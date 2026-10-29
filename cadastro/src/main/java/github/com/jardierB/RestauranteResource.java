@@ -11,6 +11,8 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import github.com.jardierB.model.Restaurante;
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
 import github.com.jardierB.dto.AdicionarRestauranteDTO;
 import github.com.jardierB.dto.RestauranteMapper;
 import github.com.jardierB.model.Prato;
@@ -35,8 +37,7 @@ import jakarta.ws.rs.core.Response.Status;
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "restaurantes")
 @RolesAllowed("proprietario")
-@SecurityScheme(securitySchemeName = "ifood-oauth", type = SecuritySchemeType.OAUTH2, 
-flows = @OAuthFlows(password = @OAuthFlow(tokenUrl = "http://localhost:8180/realms/ifood/protocol/openid-connect/token")))
+@SecurityScheme(securitySchemeName = "ifood-oauth", type = SecuritySchemeType.OAUTH2, flows = @OAuthFlows(password = @OAuthFlow(tokenUrl = "http://localhost:8180/realms/ifood/protocol/openid-connect/token")))
 @SecurityRequirement(name = "ifood-oauth")
 public class RestauranteResource {
 
@@ -44,6 +45,8 @@ public class RestauranteResource {
     RestauranteMapper restauranteMapper;
 
     @GET
+    @Counted(value = "restaurantes_buscar_total", description = "Quantidade de buscas de restaurantes")
+    @Timed(value = "restaurantes_buscar_tempo", description = "Tempo completo de busca")
     public List<Restaurante> buscar() {
         return Restaurante.listAll();
     }

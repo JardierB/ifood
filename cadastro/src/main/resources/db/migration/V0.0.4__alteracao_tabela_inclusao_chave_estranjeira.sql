@@ -1,0 +1,2 @@
+ALTER TABLE pratos ADD CONSTRAINT pratos_fk FOREIGN KEY (restaurante_id) REFERENCES restaurantes(id);
+ALTER TABLE restaurantes ADD CONSTRAINT restaurantes_fk FOREIGN KEY (localizacao_id) REFERENCES localizacoes(id);

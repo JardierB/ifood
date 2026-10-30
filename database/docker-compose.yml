@@ -1,11 +1,12 @@
 version: '3.7'
 services:
      postgres_cadastro:
-          container_name: db_ifood_cadastro
+          container_name: db_ifood
           restart: always
           image: postgres:12.2
           environment:
                POSTGRES_USER: cadastro
                POSTGRES_PASSWORD: cadastro
+               POSTGRES_DB: ifood
           ports:
-               - "5432:5432"   
+               - "5432:5432"          

@@ -4,21 +4,33 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.security.OAuthFlow;
 import org.eclipse.microprofile.openapi.annotations.security.OAuthFlows;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import github.com.jardierB.model.Restaurante;
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
+import io.quarkus.vertx.http.runtime.devmode.Json.JsonObjectBuilder;
+import io.vertx.core.json.Json;
 import github.com.jardierB.dto.AdicionarRestauranteDTO;
 import github.com.jardierB.dto.RestauranteMapper;
 import github.com.jardierB.model.Prato;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolation;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -44,6 +56,13 @@ public class RestauranteResource {
     @Inject
     RestauranteMapper restauranteMapper;
 
+    @Inject
+    @Channel("restaurantes")
+    Emitter<String> emitter;
+
+    @Inject
+    ObjectMapper objectMapper;
+
     @GET
     @Counted(value = "restaurantes_buscar_total", description = "Quantidade de buscas de restaurantes")
     @Timed(value = "restaurantes_buscar_tempo", description = "Tempo completo de busca")
@@ -53,9 +72,16 @@ public class RestauranteResource {
 
     @POST
     @Transactional
+    @APIResponse(responseCode = "200", description = "Caso restaurante seja cadastrado com sucesso")
+    @APIResponse(responseCode = "400", description = "Erro de validação dos dados enviados", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ConstraintViolation.class)))
     public Response adicionar(AdicionarRestauranteDTO dto) {
         Restaurante restaurante = restauranteMapper.toRestaurante(dto);
         restaurante.persist();
+
+        Jsonb create = JsonbBuilder.create();
+        String json = create.toJson(restaurante);
+
+        emitter.send(json);
         return Response.status(Status.CREATED).build();
     }
 

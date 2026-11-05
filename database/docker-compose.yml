@@ -10,7 +10,7 @@ services:
                POSTGRES_DB: ifood
           ports:
                - "5432:5432"  
-# Bando do marketplace
+# Banco do marketplace
      postgres_marketplace:
           container_name: db_marketplace_ifood
           restart: always
@@ -21,3 +21,14 @@ services:
                POSTGRES_DB: marketplace
           ports:
                - "5433:5432"  
+
+#Banco do Peido com MongoDB               
+     mongo_pedido:
+          container_name: db_pedido_ifood
+          restart: always
+          image: mongo:4.2.5-bionic
+          environment:
+              MONGO_INITDB_ROOT_USERNAME: pedido
+              MONGO_INITDB_ROOT_PASSWORD: pedido
+          ports:
+               - "27017:27017"  

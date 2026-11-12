@@ -27,7 +27,7 @@ services:
 
   kafdrop:
     container_name: kafdrop_container
-    image: obsidiandynamics/kafdrop:3.24.0
+    image: obsidiandynamics/kafdrop:latest
     depends_on:
       - kafka
     environment:

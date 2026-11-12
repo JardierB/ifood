@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 
 import github.com.jardier.dto.PratoDTO;
 import io.smallrye.mutiny.Multi;
-
+import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.sqlclient.Pool;
+import io.vertx.mutiny.sqlclient.Row;
+import io.vertx.mutiny.sqlclient.RowSet;
 import io.vertx.mutiny.sqlclient.Tuple;
 
 public class Prato {
@@ -35,5 +37,25 @@ public class Prato {
                 .onItem()
                 .transform(PratoDTO::from);
 
+    }
+
+    public static Uni<PratoDTO> findById(Pool client, Long id) {
+        return client.preparedQuery(
+                "SELECT * FROM pratos WHERE id = $1")
+                .execute(Tuple.of(id))
+                .map(rowSet -> {
+                    System.out.println("ID pesquisado: " + id);
+                    System.out.println("Quantidade encontrada: " + rowSet.size());
+
+                    if (rowSet.size() == 0) {
+                        return null;
+                    }
+
+                    Row row = rowSet.iterator().next();
+
+                    System.out.println("Nome encontrado: " + row.getString("nome"));
+
+                    return PratoDTO.from(row);
+                });
     }
 }

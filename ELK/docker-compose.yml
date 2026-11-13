@@ -1,0 +1,40 @@
+version: '3.9'
+
+# ELK é a sigla para três ferramentas: 
+# Elasticsearch - Armazenar, indexar e pesquisar dados
+# Logstash - Coletar e processar dados
+# Kibana - Visualizar e analisar dados
+services:
+
+  # se ocorrer [1]: max virtual memory areas vm.max_map_count [65530] is too low, 
+  # increase to at least [262144]
+  # sudo sysctl -w vm.max_map_count=262144
+  elastic:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.29
+    ports:
+      - "9200:9200"
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  #URL de acesso: http://localhost:5601/app/kibana
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:7.17.29
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+      SERVER_HOST: "0.0.0.0"
+    depends_on:
+      - elastic
+
+    

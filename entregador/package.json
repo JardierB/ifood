@@ -1,0 +1,9 @@
+{
+  "name": "entregador",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Aplicação de localização em tempo real",
+  "dependencies": {
+    "sockjs-client": "^1.6.1"
+  }
+}

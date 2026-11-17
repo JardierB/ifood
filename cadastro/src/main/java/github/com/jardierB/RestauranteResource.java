@@ -3,6 +3,9 @@ package github.com.jardierB;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.microprofile.jwt.Claim;
+import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -20,8 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import github.com.jardierB.model.Restaurante;
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
-import io.quarkus.vertx.http.runtime.devmode.Json.JsonObjectBuilder;
-import io.vertx.core.json.Json;
+import io.quarkus.security.ForbiddenException;
 import github.com.jardierB.dto.AdicionarRestauranteDTO;
 import github.com.jardierB.dto.RestauranteMapper;
 import github.com.jardierB.model.Prato;
@@ -63,10 +65,16 @@ public class RestauranteResource {
     @Inject
     ObjectMapper objectMapper;
 
+    @Inject
+    JsonWebToken jwt; //token completo
+
+    
     @GET
     @Counted(value = "restaurantes_buscar_total", description = "Quantidade de buscas de restaurantes")
     @Timed(value = "restaurantes_buscar_tempo", description = "Tempo completo de busca")
     public List<Restaurante> buscar() {
+        String sub = jwt.getSubject();
+        System.out.println(sub);
         return Restaurante.listAll();
     }
 
@@ -75,7 +83,11 @@ public class RestauranteResource {
     @APIResponse(responseCode = "200", description = "Caso restaurante seja cadastrado com sucesso")
     @APIResponse(responseCode = "400", description = "Erro de validação dos dados enviados", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ConstraintViolation.class)))
     public Response adicionar(AdicionarRestauranteDTO dto) {
+        String sub = jwt.getSubject();
+
         Restaurante restaurante = restauranteMapper.toRestaurante(dto);
+        restaurante.proprietario = sub;
+
         restaurante.persist();
 
         Jsonb create = JsonbBuilder.create();
@@ -89,12 +101,18 @@ public class RestauranteResource {
     @Path("{id}")
     @Transactional
     public void atualizar(@PathParam("id") Long id, Restaurante dto) {
+        String sub = jwt.getSubject();
+
         Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(id);
 
         if (restauranteOp.isEmpty()) {
             throw new NotFoundException();
         }
         Restaurante restaurante = restauranteOp.get();
+
+        if(!restaurante.proprietario.equals(sub)) {
+            throw new ForbiddenException();
+        }
         restaurante.nome = dto.nome;
         restaurante.persist();
 
@@ -104,7 +122,14 @@ public class RestauranteResource {
     @Path("{id}")
     @Transactional
     public void deletar(@PathParam("id") Long id) {
+        String sub = jwt.getSubject();
+        
         Optional<Restaurante> restauranteOp = Restaurante.findByIdOptional(id);
+
+        if(!restauranteOp.get().proprietario.equals(sub)) {
+            throw new ForbiddenException();
+        }
+
         restauranteOp.ifPresentOrElse(restaurante -> restaurante.delete(), () -> {
             throw new NotFoundException();
         });

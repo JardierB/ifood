@@ -53,7 +53,7 @@ public class PedidoResource {
     }
 
     @GET
-    public List<PanacheMongoEntityBase> hello() {
+    public List<PanacheMongoEntityBase> buscar() {
         return Pedido.listAll();
     }
 

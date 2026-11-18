@@ -38,7 +38,6 @@ A imagem abaixo representa a arquitetura utilizada como referência para o desen
 
 ### Mensageria e comunicação
 ![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-Streaming-231F20?style=for-the-badge&logo=apachekafka&logoColor=white)
-![RabbitMQ](https://img.shields.io/badge/RabbitMQ-Messaging-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white)
 ![ActiveMQ](https://img.shields.io/badge/ActiveMQ-Messaging-EA1D2C?style=for-the-badge)
 
 ### Segurança e integração
